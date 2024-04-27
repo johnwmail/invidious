@@ -55,7 +55,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: docker.io/${{ secrets.DOCKER_USERNAME }}/invidious
+          images: docker.io/${{ secrets.DOCKER_USERNAME }}/invidious-loginonly
+          flavor: |
+            suffix=-amd64
           tags: |
             type=sha,format=short,prefix={{date 'YYYY.MM.DD'}}-,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
@@ -78,9 +80,9 @@ jobs:
         id: meta-arm64
         uses: docker/metadata-action@v5
         with:
-          images: docker.io/${{ secrets.DOCKER_USERNAME }}/invidious
-          flavor: |
-            suffix=-arm64
+          images: docker.io/${{ secrets.DOCKER_USERNAME }}/invidious-loginonly
+          #flavor: |
+          #  suffix=-arm64
           tags: |
             type=sha,format=short,prefix={{date 'YYYY.MM.DD'}}-,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
