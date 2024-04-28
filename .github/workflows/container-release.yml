@@ -3,7 +3,7 @@ name: Build and release container
 on:
   push:
     branches:
-      - "CICD"
+      - "build"
     paths-ignore:
       - "*.md"
       - LICENCE
@@ -38,8 +38,6 @@ jobs:
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -56,47 +54,21 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: docker.io/${{ secrets.DOCKER_USERNAME }}/invidious-loginonly
-          flavor: |
-            suffix=-amd64
           tags: |
-            type=sha,format=short,prefix={{date 'YYYY.MM.DD'}}-,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
+            type=sha,format=short,prefix={{date 'YYYY.MM.DD'}}-,enable=${{ github.ref == format('refs/heads/{0}', 'build') }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'build') }}
           labels: |
             docker.expires-after=12w
 
-      - name: Build and push Docker AMD64 image for Push Event
+      - name: Build and push Docker ARM64 / AMD64 image for Push Event
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker/Dockerfile
-          platforms: linux/amd64
+          file: docker/Dockerfile.arm64
+          platforms: linux/arm64/v8, linux/amd64
           labels: ${{ steps.meta.outputs.labels }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             "release=1"
-
-      - name: Docker meta
-        id: meta-arm64
-        uses: docker/metadata-action@v5
-        with:
-          images: docker.io/${{ secrets.DOCKER_USERNAME }}/invidious-loginonly
-          #flavor: |
-          #  suffix=-arm64
-          tags: |
-            type=sha,format=short,prefix={{date 'YYYY.MM.DD'}}-,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'CICD') }}
-          labels: |
-            docker.expires-after=12w
-
-      - name: Build and push Docker ARM64 image for Push Event
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: docker/Dockerfile.arm64
-          platforms: linux/arm64/v8
-          labels: ${{ steps.meta-arm64.outputs.labels }}
-          push: true
-          tags: ${{ steps.meta-arm64.outputs.tags }}
-          build-args: |
-            "release=1"
+            
