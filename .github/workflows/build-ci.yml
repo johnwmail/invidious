@@ -26,7 +26,7 @@ jobs:
           set -x
           echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
           echo "REPO_NAME=$(echo ${{ github.repository }} | sed -E 's,.+/([^/]+),\1,')" >> ${GITHUB_ENV}
-          git clone iv-org/invidious.git
+          git clone https://github.com/iv-org/invidious.git
           cd ${{ github.workspace }}/invidious && patch -p0 < ../invidious-login_only.diff.txt
          #mv * ${{ github.workspace }}/
          #cd ${{ github.workspace }}/
