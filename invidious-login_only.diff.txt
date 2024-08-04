@@ -1,0 +1,56 @@
+--- src/invidious/config.cr.orig	2023-09-21 16:10:32.005680242 +0800
++++ src/invidious/config.cr	2023-09-21 16:14:09.741284621 +0800
+@@ -84,6 +84,7 @@
+ 
+   # Used to tell Invidious it is behind a proxy, so links to resources should be https://
+   property https_only : Bool?
++  property login_only : Bool?
+   # HMAC signing key for CSRF tokens and verifying pubsub subscriptions
+   property hmac_key : String = ""
+   # Domain to be used for links to resources on the site where an absolute URL is required
+--- src/invidious/routes/before_all.cr.orig	2023-09-21 16:10:32.041680175 +0800
++++ src/invidious/routes/before_all.cr	2023-09-21 16:21:24.668534275 +0800
+@@ -61,18 +61,6 @@
+       env.response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+     end
+ 
+-    return if {
+-                "/sb/",
+-                "/vi/",
+-                "/s_p/",
+-                "/yts/",
+-                "/ggpht/",
+-                "/api/manifest/",
+-                "/videoplayback",
+-                "/latest_version",
+-                "/download",
+-              }.any? { |r| env.request.resource.starts_with? r }
+-
+     if env.request.cookies.has_key? "SID"
+       sid = env.request.cookies["SID"].value
+ 
+@@ -100,6 +88,24 @@
+       end
+     end
+ 
++    unregistered_path_whitelist = {"/", "/login", "/licenses", "/privacy"}
++    if !env.get?("user") && !unregistered_path_whitelist.includes?(env.request.path) && CONFIG.login_only
++      env.response.headers["Location"] = "/login"
++      haltf env, status_code: 302
++    end
++
++    return if {
++                "/sb/",
++                "/vi/",
++                "/s_p/",
++                "/yts/",
++                "/ggpht/",
++                "/api/manifest/",
++                "/videoplayback",
++                "/latest_version",
++                "/download",
++              }.any? { |r| env.request.resource.starts_with? r }
++
+     dark_mode = convert_theme(env.params.query["dark_mode"]?) || preferences.dark_mode.to_s
+     thin_mode = env.params.query["thin_mode"]? || preferences.thin_mode.to_s
+     thin_mode = thin_mode == "true"
