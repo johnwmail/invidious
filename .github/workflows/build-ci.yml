@@ -9,6 +9,8 @@ on:
       - CICD
     paths-ignore:
       - .github/workflows/*
+      - .gitea/workflows/*
+      - .gitlab-ci.*
 
 jobs:
   release:
