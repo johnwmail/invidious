@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} build
 on:
   workflow_dispatch:
   schedule:
-    - cron: "4 14 4 * *" # Build once per month
+    - cron: "6 22 4 * *" # Build once per month
   push:
     branches:
       - CICD
