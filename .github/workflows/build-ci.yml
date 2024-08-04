@@ -28,8 +28,8 @@ jobs:
           echo "REPO_NAME=$(echo ${{ github.repository }} | sed -E 's,.+/([^/]+),\1,')" >> ${GITHUB_ENV}
           git clone https://github.com/iv-org/invidious.git
           cd ${{ github.workspace }}/invidious && patch -p0 < ../invidious-login_only.diff.txt
-         #mv * ${{ github.workspace }}/
-         #cd ${{ github.workspace }}/
+          mv * ${{ github.workspace }}/
+          cd ${{ github.workspace }}/
 
 #     - name: Set up QEMU
 #       uses: docker/setup-qemu-action@v3
