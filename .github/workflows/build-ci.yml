@@ -3,7 +3,7 @@ run-name: ${{ gitea.actor }} build
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 8 18 * *" # Build once per month
+    - cron: "48 13 4 * *" # Build once per month
   push:
     branches:
       - CICD
