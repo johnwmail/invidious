@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} build
 on:
   workflow_dispatch:
   schedule:
-    - cron: "6 22 4 * *" # Build once per month
+    - cron: "8 22 4 * *" # Build once per month
   push:
     branches:
       - CICD
@@ -15,7 +15,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    container: docker.io/${{ secrets.DOCKER_USERNAME }}/actbuildx:latest
+    container: "${{ secrets.DOCKER_REPO }}/actbuildx:latest"
 
     steps:
       - name: Checkout
