@@ -1,1 +1,0 @@
-The Helm chart has moved to a dedicated GitHub repository: https://github.com/iv-org/invidious-helm-chart/tree/master/invidious

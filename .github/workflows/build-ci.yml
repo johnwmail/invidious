@@ -1,0 +1,54 @@
+name: Build and release container for SID
+run-name: ${{ gitea.actor }} build
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 18 * *" # Build once per month
+  push:
+    branches:
+      - CICD
+    paths-ignore:
+      - .github/workflows/*
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: ${{ secrets.DOCKER_REPO }}/actbuildx:latest
+
+    steps:
+      - name: Checkout
+        uses: https://github.com/actions/checkout@v4
+     
+      - name: Set RELEASE_DATE
+        run: |
+          set -x
+          echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+          echo "REPO_NAME=$(echo ${{ github.repository }} | sed -E 's,.+/([^/]+),\1,')" >> ${GITHUB_ENV}
+          git clone https://github.com/iv-org/invidious.git
+          cd ${{ github.workspace }}/invidious && patch -p0 < ../invidious-login_only.diff.txt
+         #mv * ${{ github.workspace }}/
+         #cd ${{ github.workspace }}/
+
+#     - name: Set up QEMU
+#       uses: https://github.com/docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: https://github.com/docker/setup-buildx-action@v3
+
+      - name: Login to registry
+        uses: https://github.com/docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker AMD64/ARM64 image for latest
+        uses: https://github.com/docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: linux/amd64, linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_REPO }}/${{ env.REPO_NAME }}:latest
+            ${{ secrets.DOCKER_REPO }}/${{ env.REPO_NAME }}:${{ env.RELEASE_DATE }}
