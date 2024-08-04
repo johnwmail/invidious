@@ -1,9 +1,9 @@
-name: Build and release container for SID
-run-name: ${{ gitea.actor }} build
+name: Build and release container
+run-name: ${{ github.actor }} build
 on:
   workflow_dispatch:
   schedule:
-    - cron: "50 13 4 * *" # Build once per month
+    - cron: "53 13 4 * *" # Build once per month
   push:
     branches:
       - CICD
