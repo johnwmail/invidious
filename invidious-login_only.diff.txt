@@ -1,6 +1,6 @@
 --- src/invidious/config.cr.orig	2023-09-21 16:10:32.005680242 +0800
 +++ src/invidious/config.cr	2023-09-21 16:14:09.741284621 +0800
-@@ -84,6 +84,7 @@
+@@ -94,6 +94,7 @@
  
    # Used to tell Invidious it is behind a proxy, so links to resources should be https://
    property https_only : Bool?
