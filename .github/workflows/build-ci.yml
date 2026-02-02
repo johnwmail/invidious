@@ -12,6 +12,9 @@ on:
       - .gitea/workflows/*
       - .gitlab-ci.*
 
+permissions:
+  packages: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
