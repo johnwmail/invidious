@@ -10,8 +10,8 @@
    # Used to tell Invidious it is behind a proxy, so links to resources should be https://
    property https_only : Bool?
    # HMAC signing key for CSRF tokens and verifying pubsub subscriptions
---- src/invidious/routes/before_all.cr.orig	2025-09-14 18:06:56.955009786 +0800
-+++ src/invidious/routes/before_all.cr	2025-09-14 18:11:18.157162618 +0800
+--- src/invidious/routes/before_all.cr.orig	2026-02-02 10:26:51.553127085 +0800
++++ src/invidious/routes/before_all.cr	2026-02-02 10:27:01.996404629 +0800
 @@ -53,19 +53,6 @@
        env.response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
      end
@@ -63,5 +63,5 @@
 +              }.any? { |r| env.request.resource.starts_with? r }
 +
      dark_mode = convert_theme(env.params.query["dark_mode"]?) || preferences.dark_mode.to_s
-     thin_mode = env.params.query["thin_mode"]? || preferences.thin_mode.to_s
-     thin_mode = thin_mode == "true"
+     thin_mode = env.params.query["thin_mode"]?
+     thin_mode = (thin_mode == "true") || preferences.thin_mode

@@ -1,16 +1,24 @@
 name: Github Action with a cronjob trigger
 on:
   schedule:
-    - cron: "0 0 * * *"
-permissions:
-  actions: write
-  contents: write
+    - cron: "22 14 4 * *" # Build once per month
+
 jobs:
   cronjob-based-github-action:
     name: Cronjob based github action
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # - step 2
-      # - step n, use it as the last step
-      - uses: gautamkrishnar/keepalive-workflow@v2 # using the workflow with default settings
+
+      - name: Make some changes
+        run: |
+          date --utc +%Y-%m-%dT%H:%M:%SZ >> build.txt
+
+      - name: Run the Action
+        uses: devops-infra/action-commit-push@v1.0.3
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          add_timestamp: true
+          commit_prefix: "[AUTO]"
+          commit_message: "Build container image triggered by cronjob"
+
