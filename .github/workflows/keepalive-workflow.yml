@@ -1,7 +1,7 @@
 name: Github Action with a cronjob trigger
 on:
   schedule:
-    - cron: "22 14 4 * *" # Build once per month
+    - cron: "1 1 1 * *" # Run once per month
 
 jobs:
   cronjob-based-github-action:
@@ -12,13 +12,12 @@ jobs:
 
       - name: Make some changes
         run: |
-          date --utc +%Y-%m-%dT%H:%M:%SZ >> build.txt
+          date --utc +%Y-%m-%dT%H:%M:%SZ > .keepalive.txt
 
       - name: Run the Action
         uses: devops-infra/action-commit-push@v1.0.3
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
-          add_timestamp: true
-          commit_prefix: "[AUTO]"
-          commit_message: "Build container image triggered by cronjob"
+          commit_prefix: "[ci skip] "
+          commit_message: "Automatic update repository to keep CI alive"
 

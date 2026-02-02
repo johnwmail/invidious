@@ -2,8 +2,8 @@ name: Build and release container
 run-name: ${{ github.actor }} build
 on:
   workflow_dispatch:
-  #schedule:
-  #  - cron: "22 14 4 * *" # Build once per month
+  schedule:
+    - cron: "22 14 4 * *" # Build once per month
   push:
     branches:
       - CICD
