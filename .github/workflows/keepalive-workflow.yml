@@ -2,9 +2,13 @@ name: Github Action with a cronjob trigger
 on:
   schedule:
     - cron: "1 1 1 * *" # Run once per month
+  workflow_dispatch:
 
 jobs:
   cronjob-based-github-action:
+    permissions:
+       contents: write
+
     name: Cronjob based github action
     runs-on: ubuntu-latest
     steps:
@@ -15,7 +19,7 @@ jobs:
           date --utc +%Y-%m-%dT%H:%M:%SZ > .keepalive.txt
 
       - name: Run the Action
-        uses: devops-infra/action-commit-push@v1.0.3
+        uses: devops-infra/action-commit-push@v1.1.0
         with:
           github_token: "${{ secrets.KEEPALIVE_GITHUB_TOKEN }}"
           commit_prefix: "[ci skip] "
