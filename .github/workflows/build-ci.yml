@@ -28,7 +28,7 @@ jobs:
           set -x
           echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
           git clone https://github.com/iv-org/invidious.git
-          cd ${{ github.workspace }}/invidious && patch -p0 < ../invidious-login_only.diff.txt
+          cd ${{ github.workspace }}/invidious && patch -p1 < ../invidious-login_only.diff
           mv * ${{ github.workspace }}/
           cd ${{ github.workspace }}/
 

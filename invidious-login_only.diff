@@ -1,18 +1,22 @@
---- src/invidious/config.cr.orig	2025-09-14 18:06:56.913506977 +0800
-+++ src/invidious/config.cr	2025-09-14 18:07:55.258681059 +0800
-@@ -114,6 +114,9 @@
+diff --git a/src/invidious/config.cr b/src/invidious/config.cr
+index 2efb6c70..8603c954 100644
+--- a/src/invidious/config.cr
++++ b/src/invidious/config.cr
+@@ -121,6 +121,9 @@ class Config
    # Jobs config structure. See jobs.cr and jobs/base_job.cr
    property jobs = Invidious::Jobs::JobsConfig.new
  
-+  property login_only : Bool?     
++  property login_only : Bool?
 +  property redirect_only : Bool?
 +
    # Used to tell Invidious it is behind a proxy, so links to resources should be https://
    property https_only : Bool?
    # HMAC signing key for CSRF tokens and verifying pubsub subscriptions
---- src/invidious/routes/before_all.cr.orig	2026-02-02 10:26:51.553127085 +0800
-+++ src/invidious/routes/before_all.cr	2026-02-02 10:27:01.996404629 +0800
-@@ -53,19 +53,6 @@
+diff --git a/src/invidious/routes/before_all.cr b/src/invidious/routes/before_all.cr
+index f8a4869e..4c94678c 100644
+--- a/src/invidious/routes/before_all.cr
++++ b/src/invidious/routes/before_all.cr
+@@ -69,19 +69,6 @@ module Invidious::Routes::BeforeAll
        env.response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
      end
  
@@ -32,7 +36,7 @@
      if env.request.cookies.has_key? "SID"
        sid = env.request.cookies["SID"].value
  
-@@ -93,6 +80,32 @@
+@@ -109,6 +96,32 @@ module Invidious::Routes::BeforeAll
        end
      end
  
@@ -62,6 +66,6 @@
 +                "/companion/",
 +              }.any? { |r| env.request.resource.starts_with? r }
 +
-     dark_mode = convert_theme(env.params.query["dark_mode"]?) || preferences.dark_mode.to_s
+     dark_mode = Invidious::User::Converters.convert_theme(env.params.query["dark_mode"]?) || preferences.dark_mode.to_s
      thin_mode = env.params.query["thin_mode"]?
      thin_mode = (thin_mode == "true") || preferences.thin_mode
